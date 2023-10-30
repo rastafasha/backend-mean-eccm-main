@@ -1,0 +1,42 @@
+/*
+ Ruta: /api/direccions
+ */
+
+const { Router } = require('express');
+const router = Router();
+const {
+
+    crearDireccion,
+    actualizarDireccion,
+    borrarDireccion,
+    getDireccion,
+    getDireccions,
+    listarPorUsuario
+} = require('../controllers/direccionController');
+const { validarJWT } = require('../middlewares/validar-jwt');
+const { check } = require('express-validator');
+const { validarCampos } = require('../middlewares/validar-campos');
+
+
+router.get('/', getDireccions);
+router.get('/direcciones/:id', listarPorUsuario);
+
+router.post('/direccion/registro', [
+    validarJWT,
+    check('direccion', 'El direccion es necesario').not().isEmpty(),
+    validarCampos
+], crearDireccion);
+
+router.put('/direccion/update/:id', [
+    validarJWT,
+    check('direccion', 'El direccion es necesario').not().isEmpty(),
+    validarCampos
+], actualizarDireccion);
+
+router.delete('/direccion/remove/:id', validarJWT, borrarDireccion);
+
+router.get('/direccion/data/:id', getDireccion);
+
+
+
+module.exports = router;
