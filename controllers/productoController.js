@@ -1,6 +1,5 @@
 const { response } = require('express');
 const Producto = require('../models/producto');
-const Categoria = require('../models/categoria');
 const fs = require('fs');
 
 
@@ -26,7 +25,7 @@ function listarAdmin(req, res) {
 
 const getProductos = async(req, res) => {
 
-    const productos = await Producto.find().populate('titulo img categoria');
+    const productos = await Producto.find().populate('titulo img categoria color');
 
     res.json({
         ok: true,
@@ -50,6 +49,7 @@ const getProducto = async(req, res) => {
     const uid = req.uid;
 
     Producto.findById(id)
+        .populate('color')
         .exec((err, producto) => {
             if (err) {
                 return res.status(500).json({
@@ -186,7 +186,9 @@ function find_by_slug(req, res) {
 }
 
 function listar_newest(req, res) {
-    Producto.find().sort({ createdAt: -1 }).limit(4).exec((err, data) => {
+    Producto.find()
+    .populate('categoria')
+    .sort({ createdAt: -1 }).limit(4).exec((err, data) => {
         if (data) {
             res.status(200).send({ data: data });
         }
@@ -248,6 +250,7 @@ const cat_by_name = async(req, res) => {
 
 
 
+
 function listar_cat(req, res) {
     var filtro = req.params['filtro'];
 
@@ -279,6 +282,8 @@ function listar_cat_papelera(req, res) {
         }
     });
 }
+
+
 
 
 function desactivar(req, res) {
@@ -390,9 +395,6 @@ function aumentar_venta(req, res) {
 }
 
 
-
-
-
 const listar_autocomplete = async(req, res) => {
 
     const id = req.params.id;
@@ -434,11 +436,15 @@ function listar_general_data(req, res) {
     });
 }
 
+
+//estes es el que funciona!!
 function listar_productosCateg(req, res) {
 
-    var filtro = req.params['filtro'];
+    const id = req.params.id;
 
-    Producto.find({ categoria: filtro, status: ['Categoria'] }).populate('categoria').exec((err, producto_data) => {
+    Producto.find({ categoria: id })
+    .populate('categoria')
+    .exec((err, producto_data) => {
         if (err) {
             res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
         } else {
@@ -474,6 +480,10 @@ function list_one(req, res) {
 
 
 
+
+
+
+
 module.exports = {
     getProductos,
     crearProducto,
@@ -499,7 +509,7 @@ module.exports = {
     listar_general_data,
     listar_productosCateg,
     list_one,
-    destacado
+    destacado,
 
 
 };

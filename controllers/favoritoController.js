@@ -1,23 +1,23 @@
 const { response } = require('express');
-const Direccion = require('../models/direccion');
+const Favorito = require('../models/favorites');
 
-const getDireccions = async(req, res) => {
+const getFavorites = async(req, res) => {
 
-    const direccions = await Direccion.find();
+    const favorites = await Favorito.find();
 
     res.json({
         ok: true,
-        direccions
+        favorites
     });
 };
 
-const getDireccion = (req, res) => {
+const getFavorito = (req, res) => {
 
     var id = req.params['id'];
-    Direccion.findById({ _id: id }, (err, data_direccion) => {
+    Favorito.findById({ _id: id }, (err, data_favorito) => {
         if (!err) {
-            if (data_direccion) {
-                res.status(200).send({ direccion: data_direccion });
+            if (data_favorito) {
+                res.status(200).send({ favorito: data_favorito });
             } else {
                 res.status(500).send({ error: err });
             }
@@ -29,21 +29,21 @@ const getDireccion = (req, res) => {
 
 };
 
-const crearDireccion = async(req, res) => {
+const crearFavorito = async(req, res) => {
 
     const uid = req.uid;
-    const direccion = new Direccion({
+    const favorito = new Favorito({
         usuario: uid,
         ...req.body
     });
 
     try {
 
-        const direccionDB = await direccion.save();
+        const favoritoDB = await favorito.save();
 
         res.json({
             ok: true,
-            direccion: direccionDB
+            favorito: favoritoDB
         });
 
     } catch (error) {
@@ -57,31 +57,31 @@ const crearDireccion = async(req, res) => {
 
 };
 
-const actualizarDireccion = async(req, res) => {
+const actualizarFavorito = async(req, res) => {
 
     const id = req.params.id;
     const uid = req.uid;
 
     try {
 
-        const direccion = await Direccion.findById(id);
-        if (!direccion) {
+        const favorito = await Fafovrito.findById(id);
+        if (!favorito) {
             return res.status(500).json({
                 ok: false,
-                msg: 'direccion no encontrado por el id'
+                msg: 'favorito no encontrado por el id'
             });
         }
 
-        const cambiosDireccion = {
+        const cambiosFafovrito = {
             ...req.body,
             usuario: uid
         }
 
-        const direccionActualizado = await Direccion.findByIdAndUpdate(id, cambiosDireccion, { new: true });
+        const favoritoActualizado = await Fafovrito.findByIdAndUpdate(id, cambiosFavorito, { new: true });
 
         res.json({
             ok: true,
-            direccionActualizado
+            favoritoActualizado
         });
 
     } catch (error) {
@@ -94,25 +94,25 @@ const actualizarDireccion = async(req, res) => {
 
 };
 
-const borrarDireccion = async(req, res) => {
+const borrarFavorito = async(req, res) => {
 
     const id = req.params.id;
 
     try {
 
-        const direccion = await Direccion.findById(id);
-        if (!direccion) {
+        const favorito = await Favorito.findById(id);
+        if (!favorito) {
             return res.status(500).json({
                 ok: false,
-                msg: 'direccion no encontrado por el id'
+                msg: 'Favorito no encontrado por el id'
             });
         }
 
-        await Direccion.findByIdAndDelete(id);
+        await Favorito.findByIdAndDelete(id);
 
         res.json({
             ok: true,
-            msg: 'Direccion eliminado'
+            msg: 'Favorito eliminado'
         });
 
     } catch (error) {
@@ -125,10 +125,10 @@ const borrarDireccion = async(req, res) => {
 
 const listarPorUsuario = (req, res) => {
     var id = req.params['id'];
-    Direccion.find({ user: id }, (err, data_direccion) => {
+    Favorito.find({ user: id }, (err, data_favorito) => {
         if (!err) {
-            if (data_direccion) {
-                res.status(200).send({ direcciones: data_direccion });
+            if (data_favorito) {
+                res.status(200).send({ favoritos: data_favorito });
             } else {
                 res.status(500).send({ error: err });
             }
@@ -140,11 +140,12 @@ const listarPorUsuario = (req, res) => {
 
 
 
+
 module.exports = {
-    getDireccions,
-    crearDireccion,
-    actualizarDireccion,
-    borrarDireccion,
-    getDireccion,
+    getFavorites,
+    getFavorito,
+    crearFavorito,
+    actualizarFavorito,
+    borrarFavorito,
     listarPorUsuario
 };

@@ -22,6 +22,13 @@ const getMenuFrontEnd = (role = 'USER') => {
         },
     ];
 
+    // const user = [{
+    //     first_name: user.first_name,
+    //     last_name: user.last_name,
+    //     email: user.email,
+    //     role: user.role,
+    // }];
+
     if (role === 'ADMIN') {
         menu[1].submenu.unshift({ titulo: 'Usuarios', url: 'usuarios' });
     }

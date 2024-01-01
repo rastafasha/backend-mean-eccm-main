@@ -30,7 +30,7 @@ const {
     listar_general_data,
     list_one,
     listar_productosCateg,
-    destacado
+    destacado,
 
 } = require('../controllers/productoController');
 const { validarJWT } = require('../middlewares/validar-jwt');
@@ -85,8 +85,11 @@ router.get('/producto_general/general/data/:filtro?', listar_general_data);
 router.get('/productos/cat/papelera/:filtro?', validarJWT, listar_cat_papelera);
 router.get('/producto_admin_cat/cat/:filtro?', validarJWT, listar_cat);
 router.get('/producto_by_categorynombre/:nombre', cat_by_name);
-router.get('/productos_general/cat/categoria/:id', listar_productosCateg);
+router.get('/productos_general/cat/:id', listar_productosCateg);
 router.get('/productos_general/destacado/', destacado);
+
+
+
 
 
 

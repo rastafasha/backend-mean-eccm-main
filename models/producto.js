@@ -14,6 +14,7 @@ var ProductoSchema = Schema({
     stock: { type: Number, required: true },
     categoria: { type: Schema.ObjectId, ref: 'categoria' },
     subcategoria: { type: String, required: false },
+    color: { type: String, required: false },
     marca: { type: Schema.ObjectId, ref: 'marca' },
     nombre_selector: { type: String, required: false },
     stars: { type: Number },

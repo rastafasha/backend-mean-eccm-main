@@ -7,6 +7,7 @@ var CategoriaSchema = Schema({
     subcategorias: { type: String, required: false },
     img: { type: String },
     state_banner: { type: Boolean },
+    productos: { type: Schema.ObjectId, ref: 'productos' },
     createdAt: { type: Date, default: Date.now, required: true },
     updatedAt: { type: Date }
 });

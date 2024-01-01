@@ -27,7 +27,7 @@ app.use((req, res, next) => {
 
 const options = {
     cors: {
-        origin: 'http://localhost:4200, http://localhost:5001',
+        origin: 'http://localhost:4200, http://localhost:4201, http://localhost:4202',
     },
 };
 
@@ -133,6 +133,7 @@ app.use('/api/pickups', require('./routes/pickup'));
 app.use('/api/payments', require('./routes/tipopago'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/videocursos', require('./routes/videocurso'));
+app.use('/api/favoritos', require('./routes/favorito'));
 
 app.use(bodyParser.json());
 

@@ -1,5 +1,6 @@
 const { response } = require('express');
 const Categoria = require('../models/categoria');
+const Producto = require('../models/producto');
 
 const getCategorias = async(req, res) => {
 
@@ -35,7 +36,8 @@ const getCategoria = async(req, res) => {
             }
             res.status(200).json({
                 ok: true,
-                categoria: categoria
+                categoria: categoria,
+                productos: Producto,
             });
         });
 
@@ -46,6 +48,27 @@ const getCategoria = async(req, res) => {
     //     //uid: req.uid
     // });
 };
+
+// function find_by_slug(req, res) {
+//     var slug = req.params['slug'];
+
+//     Blog.findOne({ slug: slug })
+//     .populate('usuario')
+//     .populate('categoria')
+//     .populate('binancepay')
+//     .populate('pago')
+//     .exec((err, blog_data) => {
+//         if (err) {
+//             res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+//         } else {
+//             if (blog_data) {
+//                 res.status(200).send({ blog: blog_data });
+//             } else {
+//                 res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+//             }
+//         }
+//     });
+// }
 
 const crearCategoria = async(req, res) => {
 
