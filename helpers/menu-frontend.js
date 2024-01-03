@@ -4,11 +4,11 @@ const getMenuFrontEnd = (role = 'USER') => {
             titulo: 'Menu desde sidebarService',
             icono: 'mdi mdi-gauge',
             submenu: [
-                { titulo: 'Main', url: '/' },
-                { titulo: 'progressBar', url: 'progress' },
-                { titulo: 'Donas', url: 'grafica1' },
-                { titulo: 'Promesas', url: 'promesas' },
-                { titulo: 'Rxjs', url: 'rxjs' },
+                // { titulo: 'Main', url: '/' },
+                // { titulo: 'progressBar', url: 'progress' },
+                // { titulo: 'Donas', url: 'grafica1' },
+                // { titulo: 'Promesas', url: 'promesas' },
+                // { titulo: 'Rxjs', url: 'rxjs' },
             ]
         },
         {

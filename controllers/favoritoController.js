@@ -1,34 +1,6 @@
 const { response } = require('express');
 const Favorito = require('../models/favorites');
 
-const getFavorites = async(req, res) => {
-
-    const favorites = await Favorito.find();
-
-    res.json({
-        ok: true,
-        favorites
-    });
-};
-
-const getFavorito = (req, res) => {
-
-    var id = req.params['id'];
-    Favorito.findById({ _id: id }, (err, data_favorito) => {
-        if (!err) {
-            if (data_favorito) {
-                res.status(200).send({ favorito: data_favorito });
-            } else {
-                res.status(500).send({ error: err });
-            }
-        } else {
-            res.status(500).send({ error: err });
-        }
-    });
-
-
-};
-
 const crearFavorito = async(req, res) => {
 
     const uid = req.uid;
@@ -47,7 +19,7 @@ const crearFavorito = async(req, res) => {
         });
 
     } catch (error) {
-        // console.log(error);
+        console.log(error);
         res.status(500).json({
             ok: false,
             msg: 'Hable con el admin'
@@ -64,7 +36,7 @@ const actualizarFavorito = async(req, res) => {
 
     try {
 
-        const favorito = await Fafovrito.findById(id);
+        const favorito = await Favorito.findById(id);
         if (!favorito) {
             return res.status(500).json({
                 ok: false,
@@ -72,12 +44,12 @@ const actualizarFavorito = async(req, res) => {
             });
         }
 
-        const cambiosFafovrito = {
+        const cambiosFavorito = {
             ...req.body,
             usuario: uid
         }
 
-        const favoritoActualizado = await Fafovrito.findByIdAndUpdate(id, cambiosFavorito, { new: true });
+        const favoritoActualizado = await Profile.findByIdAndUpdate(id, cambiosFavorito, { new: true });
 
         res.json({
             ok: true,
@@ -85,6 +57,7 @@ const actualizarFavorito = async(req, res) => {
         });
 
     } catch (error) {
+        console.log(error);
         res.status(500).json({
             ok: false,
             msg: 'Error hable con el admin'
@@ -93,6 +66,51 @@ const actualizarFavorito = async(req, res) => {
 
 
 };
+
+const getFavoritos = async(req, res) => {
+
+    const favoritos = await Favorito.find()
+        .populate('blog')
+        .populate('usuario')
+
+    res.json({
+        ok: true,
+        favoritos
+    });
+};
+
+
+
+const getFavorito = async(req, res) => {
+
+    const id = req.params.id;
+
+    Favorito.findById(id)
+        .populate('usuario')
+        .exec((err, favorito) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error al buscar favorito',
+                    errors: err
+                });
+            }
+            if (!favorito) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'El favorito con el id ' + id + 'no existe',
+                    errors: { message: 'No existe un favorito con ese ID' }
+                });
+
+            }
+            res.status(200).json({
+                ok: true,
+                favorito: favorito
+            });
+        });
+
+};
+
 
 const borrarFavorito = async(req, res) => {
 
@@ -104,7 +122,7 @@ const borrarFavorito = async(req, res) => {
         if (!favorito) {
             return res.status(500).json({
                 ok: false,
-                msg: 'Favorito no encontrado por el id'
+                msg: 'favorito no encontrado por el id'
             });
         }
 
@@ -112,7 +130,7 @@ const borrarFavorito = async(req, res) => {
 
         res.json({
             ok: true,
-            msg: 'Favorito eliminado'
+            msg: 'favorito eliminado'
         });
 
     } catch (error) {
@@ -123,9 +141,9 @@ const borrarFavorito = async(req, res) => {
     }
 };
 
-const listarPorUsuario = (req, res) => {
+const listarFavoritoPorUsuario = (req, res) => {
     var id = req.params['id'];
-    Favorito.find({ user: id }, (err, data_favorito) => {
+    Favorito.find({ usuario: id }, (err, data_favorito) => {
         if (!err) {
             if (data_favorito) {
                 res.status(200).send({ favoritos: data_favorito });
@@ -135,17 +153,17 @@ const listarPorUsuario = (req, res) => {
         } else {
             res.status(500).send({ error: err });
         }
-    });
+    }).populate('producto');
 }
 
 
 
-
 module.exports = {
-    getFavorites,
-    getFavorito,
     crearFavorito,
     actualizarFavorito,
+    getFavoritos,
+    getFavorito,
     borrarFavorito,
-    listarPorUsuario
+    listarFavoritoPorUsuario
+
 };

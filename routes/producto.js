@@ -31,6 +31,9 @@ const {
     list_one,
     listar_productosCateg,
     destacado,
+    getProductosActivos,
+    listar_productosColor,
+    listar_productosCategNombre
 
 } = require('../controllers/productoController');
 const { validarJWT } = require('../middlewares/validar-jwt');
@@ -38,6 +41,8 @@ const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');
 
 router.get('/', getProductos);
+router.get('/activos', getProductosActivos);
+router.get('/destacados', destacado);
 
 router.post('/', [
     validarJWT,
@@ -85,9 +90,11 @@ router.get('/producto_general/general/data/:filtro?', listar_general_data);
 router.get('/productos/cat/papelera/:filtro?', validarJWT, listar_cat_papelera);
 router.get('/producto_admin_cat/cat/:filtro?', validarJWT, listar_cat);
 router.get('/producto_by_categorynombre/:nombre', cat_by_name);
-router.get('/productos_general/cat/:id', listar_productosCateg);
 router.get('/productos_general/destacado/', destacado);
 
+router.get('/productos_general/cat/:id', listar_productosCateg);
+router.get('/productos_general/color/:id', listar_productosColor);
+router.get('/categoria_nombre/cat/:name', listar_productosCategNombre);
 
 
 

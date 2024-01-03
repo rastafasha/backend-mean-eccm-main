@@ -9,7 +9,11 @@ function listarAdmin(req, res) {
     Producto.find({
         titulo: new RegExp(filtro, 'i'),
         status: ['Activo', 'Desactivado', 'Edición'],
-    }, ).populate('marca').populate('categoria').sort({ createdAt: -1 }).exec((err, producto_data) => {
+    }, ).populate('marca')
+    .populate('categoria')
+    .populate('color')
+    .populate('selector')
+    .sort({ createdAt: -1 }).exec((err, producto_data) => {
         if (err) {
             res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
         } else {
@@ -25,7 +29,7 @@ function listarAdmin(req, res) {
 
 const getProductos = async(req, res) => {
 
-    const productos = await Producto.find().populate('titulo img categoria color');
+    const productos = await Producto.find().populate('titulo img categoria color selector');
 
     res.json({
         ok: true,
@@ -33,13 +37,34 @@ const getProductos = async(req, res) => {
     });
 };
 
+const getProductosActivos = async(req, res) => {
+
+    Producto.find({  status: ['Activo'] }).populate('categoria').exec((err, productos) => {
+        if (err) {
+            res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+        } else {
+            if (productos) {
+                res.status(200).send({ productos: productos });
+            } else {
+                res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+            }
+        }
+    });
+
+};
+
 const destacado = async(req, res) => {
 
-    const productos = await Producto.find('isFeatured');
-
-    res.json({
-        ok: true,
-        productos
+    Producto.find({  isFeatured: ['true'], status: ['Activo'] }).populate('categoria').exec((err, productos) => {
+        if (err) {
+            res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+        } else {
+            if (productos) {
+                res.status(200).send({ productos: productos });
+            } else {
+                res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+            }
+        }
     });
 };
 
@@ -442,8 +467,48 @@ function listar_productosCateg(req, res) {
 
     const id = req.params.id;
 
-    Producto.find({ categoria: id })
+    Producto.find({ categoria: id, status: ['Activo']  })
     .populate('categoria')
+    .exec((err, producto_data) => {
+        if (err) {
+            res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+        } else {
+            if (producto_data) {
+                res.status(200).send({ productos: producto_data });
+            } else {
+                res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+            }
+        }
+    });
+
+}
+
+function listar_productosCategNombre(req, res) {
+
+    const nombre = req.params.nombre;
+
+    Producto.find({ categoria: nombre, status: ['Activo']  })
+    .populate('categoria')
+    .exec((err, productos) => {
+        if (err) {
+            res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+        } else {
+            if (productos) {
+                res.status(200).send({ productos: productos });
+            } else {
+                res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+            }
+        }
+    });
+
+}
+
+function listar_productosColor(req, res) {
+
+    const id = req.params.id;
+
+    Producto.find({ color: id })
+    .populate('color')
     .exec((err, producto_data) => {
         if (err) {
             res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
@@ -472,6 +537,649 @@ function list_one(req, res) {
             }
         }
     });
+
+}
+
+
+function ecoomerce(req, res) {
+    var filtro = req.params['filtro'];
+    var min = req.params['min'];
+    var max = req.params['max'];
+    var sub = req.params['sub'];
+    var cat = req.params['cat'];
+    var orden = req.params['orden'];
+    var marca = req.params['marca'];
+
+
+    if (min == undefined) {
+        min = 0;
+    }
+    if (max == undefined) {
+        max = 1000;
+    }
+
+    console.log(marca);
+
+    // /productos
+    if (sub == undefined || sub == ' ') {
+        console.log('1');
+
+        if (orden == 'asc') {
+            if (marca == 'undefined') {
+                Producto.find({
+                    titulo: new RegExp(filtro, 'i'),
+                    status: ['Activo'],
+                    precio_ahora: { $gte: min, $lte: max },
+
+                }, ).populate('marca').populate('categoria').sort({ titulo: 1 }).exec((err, producto_data) => {
+                    if (err) {
+                        res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                    } else {
+                        if (producto_data) {
+
+
+                            res.status(200).send({ productos: producto_data });
+                        } else {
+                            res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                        }
+                    }
+                });
+            } else {
+                Producto.find({
+                    titulo: new RegExp(filtro, 'i'),
+                    status: ['Activo'],
+                    precio_ahora: { $gte: min, $lte: max },
+                    marca: marca
+                }, ).populate('marca').populate('categoria').sort({ titulo: 1 }).exec((err, producto_data) => {
+                    if (err) {
+                        res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                    } else {
+                        if (producto_data) {
+
+
+                            res.status(200).send({ productos: producto_data });
+                        } else {
+                            res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                        }
+                    }
+                });
+            }
+        } else if (orden == 'desc') {
+            if (marca == 'undefined') {
+                Producto.find({
+                    titulo: new RegExp(filtro, 'i'),
+                    status: ['Activo'],
+                    precio_ahora: { $gte: min, $lte: max },
+                }, ).populate('marca').populate('categoria').sort({ titulo: -1 }).exec((err, producto_data) => {
+                    if (err) {
+                        res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                    } else {
+                        if (producto_data) {
+                            res.status(200).send({ productos: producto_data });
+                        } else {
+                            res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                        }
+                    }
+                });
+            } else {
+                Producto.find({
+                    titulo: new RegExp(filtro, 'i'),
+                    status: ['Activo'],
+                    precio_ahora: { $gte: min, $lte: max },
+                    marca: marca
+                }, ).populate('marca').populate('categoria').sort({ titulo: -1 }).exec((err, producto_data) => {
+                    if (err) {
+                        res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                    } else {
+                        if (producto_data) {
+                            res.status(200).send({ productos: producto_data });
+                        } else {
+                            res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                        }
+                    }
+                });
+            }
+        } else if (orden == 'rating') {
+            if (marca == 'undefined') {
+                Producto.find({
+                    titulo: new RegExp(filtro, 'i'),
+                    status: ['Activo'],
+                    precio_ahora: { $gte: min, $lte: max },
+                }, ).populate('marca').populate('categoria').sort({ rating: -1 }).exec((err, producto_data) => {
+                    if (err) {
+                        res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                    } else {
+                        if (producto_data) {
+                            res.status(200).send({ productos: producto_data });
+                        } else {
+                            res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                        }
+                    }
+                });
+            } else {
+                Producto.find({
+                    titulo: new RegExp(filtro, 'i'),
+                    status: ['Activo'],
+                    precio_ahora: { $gte: min, $lte: max },
+                    marca: marca
+                }, ).populate('marca').populate('categoria').sort({ rating: -1 }).exec((err, producto_data) => {
+                    if (err) {
+                        res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                    } else {
+                        if (producto_data) {
+                            res.status(200).send({ productos: producto_data });
+                        } else {
+                            res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                        }
+                    }
+                });
+            }
+        } else if (orden == 'lower') {
+            if (marca == 'undefined') {
+                Producto.find({
+                    titulo: new RegExp(filtro, 'i'),
+                    status: ['Activo'],
+                    precio_ahora: { $gte: min, $lte: max },
+                }, ).populate('marca').populate('categoria').sort({ precio_ahora: 1 }).exec((err, producto_data) => {
+                    if (err) {
+                        res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                    } else {
+                        if (producto_data) {
+                            res.status(200).send({ productos: producto_data });
+                        } else {
+                            res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                        }
+                    }
+                });
+            } else {
+                Producto.find({
+                    titulo: new RegExp(filtro, 'i'),
+                    status: ['Activo'],
+                    precio_ahora: { $gte: min, $lte: max },
+                    marca: marca
+                }, ).populate('marca').populate('categoria').sort({ precio_ahora: 1 }).exec((err, producto_data) => {
+                    if (err) {
+                        res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                    } else {
+                        if (producto_data) {
+                            res.status(200).send({ productos: producto_data });
+                        } else {
+                            res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                        }
+                    }
+                });
+            }
+        } else if (orden == 'major') {
+            if (marca == 'undefined') {
+                Producto.find({
+                    titulo: new RegExp(filtro, 'i'),
+                    status: ['Activo'],
+                    precio_ahora: { $gte: min, $lte: max },
+                }, ).populate('marca').populate('categoria').sort({ precio_ahora: -1 }).exec((err, producto_data) => {
+                    if (err) {
+                        res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                    } else {
+                        if (producto_data) {
+                            res.status(200).send({ productos: producto_data });
+                        } else {
+                            res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                        }
+                    }
+                });
+            } else {
+                Producto.find({
+                    titulo: new RegExp(filtro, 'i'),
+                    status: ['Activo'],
+                    precio_ahora: { $gte: min, $lte: max },
+                    marca: marca
+                }, ).populate('marca').populate('categoria').sort({ precio_ahora: -1 }).exec((err, producto_data) => {
+                    if (err) {
+                        res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                    } else {
+                        if (producto_data) {
+                            res.status(200).send({ productos: producto_data });
+                        } else {
+                            res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                        }
+                    }
+                });
+            }
+        } else if (orden == 'date') {
+
+            if (marca == 'undefined') {
+                console.log("marc unde");
+
+                Producto.find({
+                    titulo: new RegExp(filtro, 'i'),
+                    status: ['Activo'],
+                    precio_ahora: { $gte: min, $lte: max },
+
+                }, ).populate('marca').populate('categoria').sort({ createdAt: -1 }).exec((err, producto_data) => {
+                    if (err) {
+                        res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                    } else {
+                        if (producto_data) {
+                            res.status(200).send({ productos: producto_data });
+                        } else {
+                            res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                        }
+                    }
+                });
+            } else {
+
+                Producto.find({
+                    titulo: new RegExp(filtro, 'i'),
+                    status: ['Activo'],
+                    precio_ahora: { $gte: min, $lte: max },
+                    marca: marca
+                }, ).populate('marca').populate('categoria').sort({ createdAt: -1 }).exec((err, producto_data) => {
+                    if (err) {
+                        res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                    } else {
+                        if (producto_data) {
+                            res.status(200).send({ productos: producto_data });
+                        } else {
+                            res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                        }
+                    }
+                });
+            }
+        } else {
+            console.log("todoooooo");
+            console.log(filtro);
+            Producto.find({
+                titulo: new RegExp(filtro, 'i'),
+                status: ['Activo'],
+                precio_ahora: { $gte: min, $lte: max },
+
+            }, ).populate('marca').populate('categoria').sort({ createdAt: -1 }).exec((err, producto_data) => {
+                if (err) {
+                    res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                } else {
+                    if (producto_data) {
+                        res.status(200).send({ productos: producto_data });
+
+                    } else {
+                        res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                    }
+                }
+            });
+        }
+    } else {
+        console.log('subcategorias');
+
+        if (sub == "todo") {
+            console.log(orden);
+
+            if (orden == 'asc') {
+                console.log('asc sort');
+                if (marca == 'undefined') {
+                    Producto.find({
+                        titulo: new RegExp(filtro, 'i'),
+                        status: ['Activo'],
+                        precio_ahora: { $gte: min, $lte: max },
+                        categoria: cat,
+
+                    }, ).populate('marca').populate('categoria').sort({ titulo: 1 }).exec((err, producto_data) => {
+                        if (err) {
+                            res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                        } else {
+                            if (producto_data) {
+                                res.status(200).send({ productos: producto_data });
+                            } else {
+                                res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                            }
+                        }
+                    });
+                } else {
+                    Producto.find({
+                        titulo: new RegExp(filtro, 'i'),
+                        status: ['Activo'],
+                        precio_ahora: { $gte: min, $lte: max },
+                        categoria: cat,
+                        marca: marca
+                    }, ).populate('marca').populate('categoria').sort({ titulo: 1 }).exec((err, producto_data) => {
+                        if (err) {
+                            res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                        } else {
+                            if (producto_data) {
+                                res.status(200).send({ productos: producto_data });
+                            } else {
+                                res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                            }
+                        }
+                    });
+                }
+            } else if (orden == 'desc') {
+                if (marca == 'undefined') {
+                    Producto.find({
+                        titulo: new RegExp(filtro, 'i'),
+                        status: ['Activo'],
+                        precio_ahora: { $gte: min, $lte: max },
+                        categoria: cat,
+
+                    }, ).populate('marca').populate('categoria').sort({ titulo: -1 }).exec((err, producto_data) => {
+                        if (err) {
+                            res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                        } else {
+                            if (producto_data) {
+                                res.status(200).send({ productos: producto_data });
+                            } else {
+                                res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                            }
+                        }
+                    });
+                } else {
+                    Producto.find({
+                        titulo: new RegExp(filtro, 'i'),
+                        status: ['Activo'],
+                        precio_ahora: { $gte: min, $lte: max },
+                        categoria: cat,
+                        marca: marca
+                    }, ).populate('marca').populate('categoria').sort({ titulo: -1 }).exec((err, producto_data) => {
+                        if (err) {
+                            res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                        } else {
+                            if (producto_data) {
+                                res.status(200).send({ productos: producto_data });
+                            } else {
+                                res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                            }
+                        }
+                    });
+                }
+            } else if (orden == 'rating') {
+                if (marca == 'undefined') {
+                    Producto.find({
+                        titulo: new RegExp(filtro, 'i'),
+                        status: ['Activo'],
+                        precio_ahora: { $gte: min, $lte: max },
+                        categoria: cat,
+                    }, ).populate('marca').populate('categoria').sort({ rating: -1 }).exec((err, producto_data) => {
+                        if (err) {
+                            res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                        } else {
+                            if (producto_data) {
+                                res.status(200).send({ productos: producto_data });
+                            } else {
+                                res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                            }
+                        }
+                    });
+                } else {
+                    Producto.find({
+                        titulo: new RegExp(filtro, 'i'),
+                        status: ['Activo'],
+                        precio_ahora: { $gte: min, $lte: max },
+                        categoria: cat,
+                        marca: marca
+                    }, ).populate('marca').populate('categoria').sort({ rating: -1 }).exec((err, producto_data) => {
+                        if (err) {
+                            res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                        } else {
+                            if (producto_data) {
+                                res.status(200).send({ productos: producto_data });
+                            } else {
+                                res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                            }
+                        }
+                    });
+                }
+            } else if (orden == 'lower') {
+                if (marca == 'undefined') {
+                    Producto.find({
+                        titulo: new RegExp(filtro, 'i'),
+                        status: ['Activo'],
+                        precio_ahora: { $gte: min, $lte: max },
+                        categoria: cat,
+                    }, ).populate('marca').populate('categoria').sort({ precio_ahora: 1 }).exec((err, producto_data) => {
+                        if (err) {
+                            res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                        } else {
+                            if (producto_data) {
+                                res.status(200).send({ productos: producto_data });
+                            } else {
+                                res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                            }
+                        }
+                    });
+                } else {
+                    Producto.find({
+                        titulo: new RegExp(filtro, 'i'),
+                        status: ['Activo'],
+                        precio_ahora: { $gte: min, $lte: max },
+                        categoria: cat,
+                        marca: marca
+                    }, ).populate('marca').populate('categoria').sort({ precio_ahora: 1 }).exec((err, producto_data) => {
+                        if (err) {
+                            res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                        } else {
+                            if (producto_data) {
+                                res.status(200).send({ productos: producto_data });
+                            } else {
+                                res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                            }
+                        }
+                    });
+                }
+            } else if (orden == 'major') {
+                if (marca == 'undefined') {
+                    Producto.find({
+                        titulo: new RegExp(filtro, 'i'),
+                        status: ['Activo'],
+                        precio_ahora: { $gte: min, $lte: max },
+                        categoria: cat,
+                    }, ).populate('marca').populate('categoria').sort({ precio_ahora: -1 }).exec((err, producto_data) => {
+                        if (err) {
+                            res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                        } else {
+                            if (producto_data) {
+                                res.status(200).send({ productos: producto_data });
+                            } else {
+                                res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                            }
+                        }
+                    });
+                } else {
+                    Producto.find({
+                        titulo: new RegExp(filtro, 'i'),
+                        status: ['Activo'],
+                        precio_ahora: { $gte: min, $lte: max },
+                        categoria: cat,
+                        marca: marca
+                    }, ).populate('marca').populate('categoria').sort({ precio_ahora: -1 }).exec((err, producto_data) => {
+                        if (err) {
+                            res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                        } else {
+                            if (producto_data) {
+                                res.status(200).send({ productos: producto_data });
+                            } else {
+                                res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                            }
+                        }
+                    });
+                }
+            } else if (orden == 'date') {
+                if (marca == 'undefined') {
+                    Producto.find({
+                        titulo: new RegExp(filtro, 'i'),
+                        status: ['Activo'],
+                        precio_ahora: { $gte: min, $lte: max },
+                        categoria: cat
+                    }, ).populate('marca').populate('categoria').sort({ createdAt: -1 }).exec((err, producto_data) => {
+                        if (err) {
+                            res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                        } else {
+                            if (producto_data) {
+                                res.status(200).send({ productos: producto_data });
+                            } else {
+                                res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                            }
+                        }
+                    });
+                } else {
+                    Producto.find({
+                        titulo: new RegExp(filtro, 'i'),
+                        status: ['Activo'],
+                        precio_ahora: { $gte: min, $lte: max },
+                        categoria: cat,
+                        marca: marca
+                    }, ).populate('marca').populate('categoria').sort({ createdAt: -1 }).exec((err, producto_data) => {
+                        if (err) {
+                            res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                        } else {
+                            if (producto_data) {
+                                res.status(200).send({ productos: producto_data });
+                            } else {
+                                res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                            }
+                        }
+                    });
+                }
+            } else {
+                Producto.find({
+                    titulo: new RegExp(filtro, 'i'),
+                    status: ['Activo'],
+                    precio_ahora: { $gte: min, $lte: max },
+                    categoria: cat
+                }, ).populate('marca').populate('categoria').sort({ createdAt: -1 }).exec((err, producto_data) => {
+                    if (err) {
+                        res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                    } else {
+                        if (producto_data) {
+                            res.status(200).send({ productos: producto_data });
+                        } else {
+                            res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                        }
+                    }
+                });
+            }
+        } else {
+            if (orden == 'asc') {
+                Producto.find({
+                    titulo: new RegExp(filtro, 'i'),
+                    status: ['Activo'],
+                    precio_ahora: { $gte: min, $lte: max },
+                    subcategoria: new RegExp(sub, 'i')
+                }, ).populate('marca').populate('categoria').sort({ titulo: 1 }).exec((err, producto_data) => {
+                    if (err) {
+                        res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                    } else {
+                        if (producto_data) {
+                            res.status(200).send({ productos: producto_data });
+                        } else {
+                            res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                        }
+                    }
+                });
+            } else if (orden == 'desc') {
+                Producto.find({
+                    titulo: new RegExp(filtro, 'i'),
+                    status: ['Activo'],
+                    precio_ahora: { $gte: min, $lte: max },
+                    subcategoria: new RegExp(sub, 'i')
+                }, ).populate('marca').populate('categoria').sort({ titulo: -1 }).exec((err, producto_data) => {
+                    if (err) {
+                        res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                    } else {
+                        if (producto_data) {
+                            res.status(200).send({ productos: producto_data });
+                        } else {
+                            res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                        }
+                    }
+                });
+            } else if (orden == 'rating') {
+                Producto.find({
+                    titulo: new RegExp(filtro, 'i'),
+                    status: ['Activo'],
+                    precio_ahora: { $gte: min, $lte: max },
+                    subcategoria: new RegExp(sub, 'i')
+                }, ).populate('marca').populate('categoria').sort({ rating: -1 }).exec((err, producto_data) => {
+                    if (err) {
+                        res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                    } else {
+                        if (producto_data) {
+                            res.status(200).send({ productos: producto_data });
+                        } else {
+                            res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                        }
+                    }
+                });
+            } else if (orden == 'lower') {
+                Producto.find({
+                    titulo: new RegExp(filtro, 'i'),
+                    status: ['Activo'],
+                    precio_ahora: { $gte: min, $lte: max },
+                    subcategoria: new RegExp(sub, 'i')
+                }, ).populate('marca').populate('categoria').sort({ precio_ahora: 1 }).exec((err, producto_data) => {
+                    if (err) {
+                        res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                    } else {
+                        if (producto_data) {
+                            res.status(200).send({ productos: producto_data });
+                        } else {
+                            res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                        }
+                    }
+                });
+            } else if (orden == 'major') {
+                Producto.find({
+                    titulo: new RegExp(filtro, 'i'),
+                    status: ['Activo'],
+                    precio_ahora: { $gte: min, $lte: max },
+                    subcategoria: new RegExp(sub, 'i')
+                }, ).populate('marca').populate('categoria').sort({ precio_ahora: -1 }).exec((err, producto_data) => {
+                    if (err) {
+                        res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                    } else {
+                        if (producto_data) {
+                            res.status(200).send({ productos: producto_data });
+                        } else {
+                            res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                        }
+                    }
+                });
+            } else if (orden == 'date') {
+                Producto.find({
+                    titulo: new RegExp(filtro, 'i'),
+                    status: ['Activo'],
+                    precio_ahora: { $gte: min, $lte: max },
+                    subcategoria: new RegExp(sub, 'i')
+                }, ).populate('marca').populate('categoria').sort({ createdAt: -1 }).exec((err, producto_data) => {
+                    if (err) {
+                        res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                    } else {
+                        if (producto_data) {
+                            res.status(200).send({ productos: producto_data });
+                        } else {
+                            res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                        }
+                    }
+                });
+            } else {
+                Producto.find({
+                    titulo: new RegExp(filtro, 'i'),
+                    status: ['Activo'],
+                    precio_ahora: { $gte: min, $lte: max },
+                    subcategoria: new RegExp(sub, 'i')
+                }, ).populate('marca').populate('categoria').sort({ createdAt: -1 }).exec((err, producto_data) => {
+                    if (err) {
+                        res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+                    } else {
+                        if (producto_data) {
+                            res.status(200).send({ productos: producto_data });
+                        } else {
+                            res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+                        }
+                    }
+                });
+            }
+        }
+
+
+    }
+
 
 }
 
@@ -510,6 +1218,10 @@ module.exports = {
     listar_productosCateg,
     list_one,
     destacado,
+    getProductosActivos,
+    ecoomerce,
+    listar_productosColor,
+    listar_productosCategNombre
 
 
 };

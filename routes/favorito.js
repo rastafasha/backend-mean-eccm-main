@@ -6,32 +6,32 @@
  const router = Router();
  const {
  
-    getFavorites,
-    getFavorito,
     crearFavorito,
     actualizarFavorito,
+    getFavoritos,
+    getFavorito,
     borrarFavorito,
-    listarPorUsuario
+    listarFavoritoPorUsuario
  } = require('../controllers/favoritoController');
  const { validarJWT } = require('../middlewares/validar-jwt');
  const { validarCampos } = require('../middlewares/validar-campos');
  
  
- router.get('/', getFavorites);
- router.get('/favoritos/:id', getFavorito);
- router.get('/favoritos/user/:id', listarPorUsuario);
+ router.get('/', getFavoritos);
+ router.get('/:id', getFavorito);
+ router.get('/user/:id', listarFavoritoPorUsuario);
  
- router.post('/favoritos/registro', [
+ router.post('/registro', [
      validarJWT,
      validarCampos
  ], crearFavorito);
  
- router.put('/favoritos/update/:id', [
+ router.put('/update/:id', [
      validarJWT,
      validarCampos
  ], actualizarFavorito);
  
- router.delete('/favoritos/remove/:id', validarJWT, borrarFavorito);
+ router.delete('/remove/:id', validarJWT, borrarFavorito);
  
  
  

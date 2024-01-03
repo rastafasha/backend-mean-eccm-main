@@ -17,6 +17,7 @@ const getSelector = async(req, res) => {
     const uid = req.uid;
 
     Selector.findById(id)
+        .populate('producto')
         .exec((err, selector) => {
             if (err) {
                 return res.status(500).json({

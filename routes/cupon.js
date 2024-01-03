@@ -9,13 +9,16 @@ const {
     crearCupon,
     actualizarCupon,
     borrarCupon,
-    getCupon,
+    getCuponbyId,
+    getCuponbyCode,
 } = require('../controllers/cuponController');
 const { validarJWT } = require('../middlewares/validar-jwt');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');
 
 router.get('/', getCupons);
+router.get('/:id', validarJWT, getCuponbyId);
+router.get('/codigo/:codigo', validarJWT, getCuponbyCode);
 
 router.post('/', [
     validarJWT,
@@ -31,7 +34,7 @@ router.put('/:id', [
 
 router.delete('/:id', validarJWT, borrarCupon);
 
-router.get('/:id', validarJWT, getCupon);
+
 
 
 

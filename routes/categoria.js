@@ -12,7 +12,10 @@ const {
     getCategoria,
     get_car_slide,
     list_one,
-    find_by_name
+    find_by_name,
+    getCategoriasActivos,
+    desactivar,
+    activar
 } = require('../controllers/categoriaController');
 
 const { validarJWT } = require('../middlewares/validar-jwt');
@@ -21,12 +24,16 @@ const { validarCampos } = require('../middlewares/validar-campos');
 
 router.get('/', getCategorias);
 router.get('/:id', getCategoria);
+router.get('/cat/activas', getCategoriasActivos);
 
 router.get('/slider', get_car_slide);
 
 router.get('/one/:id?', list_one);
 
 router.get('/category_by_nombre/nombre/:nombre', find_by_name);
+
+router.get('/admin/desactivar/:id', validarJWT, desactivar);
+router.get('/admin/activar/:id', validarJWT, activar);
 
 router.post('/', [
     validarJWT,
@@ -39,6 +46,8 @@ router.put('/:id', [
     check('nombre', 'El nombre del categoria es necesario').not().isEmpty(),
     validarCampos
 ], actualizarCategoria);
+
+
 
 router.delete('/:id', validarJWT, borrarCategoria);
 

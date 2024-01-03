@@ -20,6 +20,7 @@ const { validarCampos } = require('../middlewares/validar-campos');
 
 router.get('/', getDireccions);
 router.get('/direcciones/:id', listarPorUsuario);
+router.get('/direccion/:id', getDireccion);
 
 router.post('/direccion/registro', [
     validarJWT,
@@ -35,7 +36,7 @@ router.put('/direccion/update/:id', [
 
 router.delete('/direccion/remove/:id', validarJWT, borrarDireccion);
 
-router.get('/direccion/data/:id', getDireccion);
+
 
 
 

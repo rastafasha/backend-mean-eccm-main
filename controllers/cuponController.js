@@ -16,7 +16,7 @@ const getCupons = async(req, res) => {
     });
 };
 
-const getCupon = async(req, res) => {
+const getCuponbyId = async(req, res) => {
 
     const id = req.params.id;
     const uid = req.uid;
@@ -44,6 +44,23 @@ const getCupon = async(req, res) => {
             });
         });
 
+};
+
+const getCuponbyCode = async(req, res) => {
+
+    const codigo = req.params.codigo;
+
+    Cupon.find({ codigo: codigo}).exec((err, cupon_data) => {
+        if (err) {
+            res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+        } else {
+            if (cupon_data) {
+                res.status(200).send({ cupon: cupon_data });
+            } else {
+                res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+            }
+        }
+    });
 };
 
 const crearCupon = async(req, res) => {
@@ -159,5 +176,6 @@ module.exports = {
     crearCupon,
     actualizarCupon,
     borrarCupon,
-    getCupon,
+    getCuponbyId,
+    getCuponbyCode
 };

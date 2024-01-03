@@ -17,6 +17,7 @@ const getMarca = async(req, res) => {
     const uid = req.uid;
 
     Marca.findById(id)
+    .populate('producto')
         .exec((err, marca) => {
             if (err) {
                 return res.status(500).json({

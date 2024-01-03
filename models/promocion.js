@@ -8,6 +8,7 @@ const PromocionSchema = Schema({
     first_title: { type: String, required: true },
     etiqueta: { type: String, required: true },
     subtitulo: { type: String, required: true },
+    colorfondo: { type: String, required: false },
     end: { type: String, required: true },
     enlace: { type: String, required: false },
     estado: { type: Boolean, required: false },

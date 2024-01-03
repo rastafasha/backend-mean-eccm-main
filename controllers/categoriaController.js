@@ -214,6 +214,57 @@ function find_by_name(req, res) {
     });
 }
 
+
+const getCategoriasActivos = async(req, res) => {
+
+    Categoria.find({  status: ['Activo'] }).exec((err, categoria_data) => {
+        if (err) {
+            res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+        } else {
+            if (categoria_data) {
+                res.status(200).send({ categorias: categoria_data });
+            } else {
+                res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+            }
+        }
+    });
+
+};
+
+
+
+function desactivar(req, res) {
+    var id = req.params['id'];
+
+    Categoria.findByIdAndUpdate({ _id: id }, { status: 'Desactivado' }, (err, categoria_data) => {
+        if (err) {
+            res.status(500).send({ message: err });
+        } else {
+            if (categoria_data) {
+                res.status(200).send({ categoria: categoria_data });
+            } else {
+                res.status(403).send({ message: 'No se actualizó el categoria, vuelva a intentar nuevamente.' });
+            }
+        }
+    })
+}
+
+function activar(req, res) {
+    var id = req.params['id'];
+    // console.log(id);
+    Categoria.findByIdAndUpdate({ _id: id }, { status: 'Activo' }, (err, categoria_data) => {
+        if (err) {
+            res.status(500).send({ message: err });
+        } else {
+            if (categoria_data) {
+                res.status(200).send({ categoria: categoria_data });
+            } else {
+                res.status(403).send({ message: 'No se actualizó el categoria, vuelva a intentar nuevamente.' });
+            }
+        }
+    })
+}
+
 module.exports = {
     getCategorias,
     crearCategoria,
@@ -222,5 +273,8 @@ module.exports = {
     getCategoria,
     get_car_slide,
     list_one,
-    find_by_name
+    find_by_name,
+    getCategoriasActivos,
+    desactivar,
+    activar
 };
