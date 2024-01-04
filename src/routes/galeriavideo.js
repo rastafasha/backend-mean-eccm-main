@@ -13,7 +13,7 @@ const {
     crearVideo,
     desactivar,
     activar
-} = require('../../controllers/galeriaVideoController');
+} = require('../controllers/galeriaVideoController');
 const { validarJWT } = require('../middlewares/validar-jwt');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');

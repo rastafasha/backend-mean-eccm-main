@@ -14,7 +14,7 @@
     activar,
     findByCurso
  
- } = require('../../controllers/videocursoController');
+ } = require('../controllers/videocursoController');
  const { validarJWT } = require('../middlewares/validar-jwt');
  const { check } = require('express-validator');
  const { validarCampos } = require('../middlewares/validar-campos');

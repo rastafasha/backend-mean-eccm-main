@@ -12,7 +12,7 @@ const {
     getDireccion,
     getDireccions,
     listarPorUsuario
-} = require('../../controllers/direccionController');
+} = require('../controllers/direccionController');
 const { validarJWT } = require('../middlewares/validar-jwt');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');

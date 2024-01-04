@@ -16,7 +16,7 @@ const {
     set_token_recovery,
     verify_token_recovery,
     change_password
-} = require('../../controllers/usuarios');
+} = require('../controllers/usuarios');
 const {
     validarJWT,
     validarAdminRole,

@@ -11,7 +11,7 @@ const {
     getGaleria,
     findByProduct,
     registro
-} = require('../../controllers/galeriaController');
+} = require('../controllers/galeriaController');
 const { validarJWT } = require('../middlewares/validar-jwt');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');

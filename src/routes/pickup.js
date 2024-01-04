@@ -10,7 +10,7 @@ const {
     actualizarPickup,
     borrarPickup,
     getPickup,
-} = require('../../controllers/pickupController');
+} = require('../controllers/pickupController');
 const { validarJWT } = require('../middlewares/validar-jwt');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');

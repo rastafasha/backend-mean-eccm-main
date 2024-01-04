@@ -16,7 +16,7 @@ const {
     getCategoriasActivos,
     desactivar,
     activar
-} = require('../../controllers/categoriaController');
+} = require('../controllers/categoriaController');
 
 const { validarJWT } = require('../middlewares/validar-jwt');
 const { check } = require('express-validator');

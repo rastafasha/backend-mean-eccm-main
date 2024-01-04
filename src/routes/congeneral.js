@@ -10,7 +10,7 @@ const {
     actualizarCongeneral,
     borrarCongeneral,
     getCongeneral,
-} = require('../../controllers/congeneralController');
+} = require('../controllers/congeneralController');
 const { validarJWT } = require('../middlewares/validar-jwt');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');

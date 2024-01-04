@@ -30,7 +30,7 @@ const {
     listarCancelacionPorUsuario,
     getCancelacion,
 
-} = require('../../controllers/ventaController');
+} = require('../controllers/ventaController');
 
 const { validarJWT } = require('../middlewares/validar-jwt');
 const { check } = require('express-validator');

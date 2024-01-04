@@ -14,7 +14,7 @@ const {
     desactivar,
     activar,
 
-} = require('../../controllers/cursoController');
+} = require('../controllers/cursoController');
 const { validarJWT } = require('../middlewares/validar-jwt');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');

@@ -11,7 +11,7 @@ const {
     borrarPayment,
     getPayment,
     listarPorUsuario
-} = require('../../controllers/tipopagoController');
+} = require('../controllers/tipopagoController');
 const { validarJWT } = require('../middlewares/validar-jwt');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');

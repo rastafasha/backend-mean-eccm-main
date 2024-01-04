@@ -11,7 +11,7 @@ const {
     borrarColor,
     getColor,
     findByProduct
-} = require('../../controllers/colorController');
+} = require('../controllers/colorController');
 const { validarJWT } = require('../middlewares/validar-jwt');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');

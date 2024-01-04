@@ -13,7 +13,7 @@ const {
     activar,
     desactivar
 
-} = require('../../controllers/pageController');
+} = require('../controllers/pageController');
 const { validarJWT } = require('../middlewares/validar-jwt');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');

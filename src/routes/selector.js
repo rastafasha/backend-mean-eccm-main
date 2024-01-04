@@ -11,7 +11,7 @@ const {
     actualizarSelector,
     borrarSelector,
     findByProduct
-} = require('../../controllers/selectorController');
+} = require('../controllers/selectorController');
 const { validarJWT } = require('../middlewares/validar-jwt');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');

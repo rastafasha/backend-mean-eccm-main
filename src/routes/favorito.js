@@ -12,7 +12,7 @@
     getFavorito,
     borrarFavorito,
     listarFavoritoPorUsuario
- } = require('../../controllers/favoritoController');
+ } = require('../controllers/favoritoController');
  const { validarJWT } = require('../middlewares/validar-jwt');
  const { validarCampos } = require('../middlewares/validar-campos');
  

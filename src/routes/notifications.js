@@ -6,7 +6,7 @@ const { Router } = require('express');
 const router = Router();
 const {
     enviarNotificacion
-} = require('../../controllers/notificationController');
+} = require('../controllers/notificationController');
 const mongoose = require('mongoose');
 const Subscription = mongoose.model('subscribers');
 

@@ -16,28 +16,29 @@ const app = express();
 const server = require('http').Server(app);
 
 //cors
-const corsConfig = {
-  origin: '',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE']
-}
-app.use(cors(corsConfig))
-app.options("", cors(corsConfig))
-
-// app.use(cors());
-// app.use((req, res, next) => {
-//     res.header('Access-Control-Allow-Origin', '*');
-//     res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
-//     res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-//     res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
-//     next();
-// });
-
-// const options = {
-//     cors: {
-//         origin: 'http://localhost:4200, http://localhost:4201, http://localhost:4202',
-//     },
+// const corsConfig = {
+//   origin: '',
+//   credentials: true,
+//   methods: ['GET', 'POST', 'PUT', 'DELETE']
 // };
+// app.use(cors(corsConfig));
+// app.options("", cors(corsConfig));
+
+app.use(cors());
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+    next();
+});
+
+const options = {
+    cors: {
+        // origin: 'http://localhost:4200, http://localhost:4201, http://localhost:4202',
+        origin: '*',
+    },
+};
 
 
 //sockets
@@ -143,15 +144,15 @@ app.use('/api/notifications', require('./src/routes/notifications'));
 app.use('/api/videocursos', require('./src/routes/videocurso'));
 app.use('/api/favoritos', require('./src/routes/favorito'));
 
-app.use(bodyParser.json());
 
 //test
 app.get("/", (req, res) => {
-    res.json({ message: "Welcome to nodejs." });
+  res.json({ message: "Welcome to nodejs." });
 });
 
 app.get("/welcome", (req, res) => res.type('html').send(html));
 
+app.use(bodyParser.json());
 
 //notification
 const vapidKeys = {
@@ -172,8 +173,6 @@ webpush.setVapidDetails(
 app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'public')); //ruta para produccion, evita perder la ruta
 });
-
-
 
 server.keepAliveTimeout = 120 * 1000;
 server.headersTimeout = 120 * 1000;
