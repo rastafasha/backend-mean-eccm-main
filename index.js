@@ -36,7 +36,8 @@ app.use((req, res, next) => {
 const options = {
     cors: {
         // origin: 'http://localhost:4200, http://localhost:4201, http://localhost:4202',
-        origin: '*',
+        origin: 'https://adminecomnodejs.malcolmcordova.com, https://appecmnodejs.malcolmcordova.com,',
+        origin: '*', 
     },
 };
 
