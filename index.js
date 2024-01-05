@@ -17,7 +17,7 @@ const server = require('http').Server(app);
 
 //cors
 const corsConfig = {
-  origin: '*',
+  origin: 'http://localhost:4200, http://localhost:4201, http://localhost:4202, http://localhost:4203, https://adminecomnodejs.malcolmcordova.com, https://appecmnodejs.malcolmcordova.com,',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE']
 };
