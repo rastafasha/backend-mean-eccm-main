@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const { dbConnection } = require('./src/database/config');
+const { dbConnection } = require('./database/config');
 const cors = require('cors');
 const path = require('path');
 const socketIO = require('socket.io');
@@ -15,31 +15,24 @@ const app = express();
 
 const server = require('http').Server(app);
 
-//cors
-const corsConfig = {
-  origin: 'http://localhost:4200, http://localhost:4201, http://localhost:4202, http://localhost:4203, https://adminecomnodejs.malcolmcordova.com, https://appecmnodejs.malcolmcordova.com,',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE']
+
+
+app.use(cors());
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+    next();
+});
+
+const options = {
+    cors: {
+        // origin: 'http://localhost:4200, http://localhost:4201, http://localhost:4202',
+        origin: 'http://localhost:4200, http://localhost:4201, http://localhost:4202, http://localhost:4203, https://adminecomnodejs.malcolmcordova.com, https://appecmnodejs.malcolmcordova.com,',
+        origin: '*'
+    },
 };
-app.use(cors(corsConfig));
-app.options("", cors(corsConfig));
-
-// app.use(cors());
-// app.use((req, res, next) => {
-//     res.header('Access-Control-Allow-Origin', '*');
-//     res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
-//     res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-//     res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
-//     next();
-// });
-
-// const options = {
-//     cors: {
-//         // origin: 'http://localhost:4200, http://localhost:4201, http://localhost:4202',
-//         origin: 'http://localhost:4200, http://localhost:4201, http://localhost:4202, http://localhost:4203, https://adminecomnodejs.malcolmcordova.com, https://appecmnodejs.malcolmcordova.com,',
-//         origin: '*', 
-//     },
-// };
 
 
 //sockets
@@ -110,40 +103,40 @@ app.use(express.static('public'));
 
 
 //rutas
-app.use('/api/usuarios', require('./src/routes/usuarios'));
-app.use('/api/login', require('./src/routes/auth'));
-app.use('/api/todo', require('./src/routes/busquedas'));
-app.use('/api/uploads', require('./src/routes/uploads'));
-app.use('/api/blogs', require('./src/routes/blog'));
-app.use('/api/pages', require('./src/routes/page'));
-app.use('/api/sliders', require('./src/routes/slider'));
+app.use('/api/usuarios', require('./routes/usuarios'));
+app.use('/api/login', require('./routes/auth'));
+app.use('/api/todo', require('./routes/busquedas'));
+app.use('/api/uploads', require('./routes/uploads'));
+app.use('/api/blogs', require('./routes/blog'));
+app.use('/api/pages', require('./routes/page'));
+app.use('/api/sliders', require('./routes/slider'));
 
 //tienda
-app.use('/api/marcas', require('./src/routes/marcas'));
-app.use('/api/categorias', require('./src/routes/categoria'));
-app.use('/api/cursos', require('./src/routes/curso'));
-app.use('/api/productos', require('./src/routes/producto'));
-app.use('/api/colors', require('./src/routes/color'));
-app.use('/api/selectors', require('./src/routes/selector'));
-app.use('/api/carritos', require('./src/routes/carrito'));
-app.use('/api/comentarios', require('./src/routes/comentario'));
-app.use('/api/congenerals', require('./src/routes/congeneral'));
-app.use('/api/contactos', require('./src/routes/contacto'));
-app.use('/api/cupons', require('./src/routes/cupon'));
-app.use('/api/direccions', require('./src/routes/direccion'));
-app.use('/api/galerias', require('./src/routes/galeria'));
-app.use('/api/galeriavideos', require('./src/routes/galeriavideo'));
-app.use('/api/ingresos', require('./src/routes/ingreso'));
-app.use('/api/postals', require('./src/routes/postal'));
-app.use('/api/tickets', require('./src/routes/ticket'));
-app.use('/api/ventas', require('./src/routes/venta'));
-app.use('/api/promocions', require('./src/routes/promocion'));
-app.use('/api/shippings', require('./src/routes/shipping'));
-app.use('/api/pickups', require('./src/routes/pickup'));
-app.use('/api/payments', require('./src/routes/tipopago'));
-app.use('/api/notifications', require('./src/routes/notifications'));
-app.use('/api/videocursos', require('./src/routes/videocurso'));
-app.use('/api/favoritos', require('./src/routes/favorito'));
+app.use('/api/marcas', require('./routes/marcas'));
+app.use('/api/categorias', require('./routes/categoria'));
+app.use('/api/cursos', require('./routes/curso'));
+app.use('/api/productos', require('./routes/producto'));
+app.use('/api/colors', require('./routes/color'));
+app.use('/api/selectors', require('./routes/selector'));
+app.use('/api/carritos', require('./routes/carrito'));
+app.use('/api/comentarios', require('./routes/comentario'));
+app.use('/api/congenerals', require('./routes/congeneral'));
+app.use('/api/contactos', require('./routes/contacto'));
+app.use('/api/cupons', require('./routes/cupon'));
+app.use('/api/direccions', require('./routes/direccion'));
+app.use('/api/galerias', require('./routes/galeria'));
+app.use('/api/galeriavideos', require('./routes/galeriavideo'));
+app.use('/api/ingresos', require('./routes/ingreso'));
+app.use('/api/postals', require('./routes/postal'));
+app.use('/api/tickets', require('./routes/ticket'));
+app.use('/api/ventas', require('./routes/venta'));
+app.use('/api/promocions', require('./routes/promocion'));
+app.use('/api/shippings', require('./routes/shipping'));
+app.use('/api/pickups', require('./routes/pickup'));
+app.use('/api/payments', require('./routes/tipopago'));
+app.use('/api/notifications', require('./routes/notifications'));
+app.use('/api/videocursos', require('./routes/videocurso'));
+app.use('/api/favoritos', require('./routes/favorito'));
 
 
 //test

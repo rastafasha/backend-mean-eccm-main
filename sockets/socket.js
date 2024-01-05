@@ -1,4 +1,4 @@
-const { io } = require('../../index');
+const { io } = require('../index');
 const express = require('express');
 const socketIO = require('socket.io');
 
