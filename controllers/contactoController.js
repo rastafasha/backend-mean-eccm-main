@@ -98,6 +98,70 @@ const borrarContacto = async(req, res) => {
 
 
 
+const getContactoAtendidos = async(req, res) => {
+
+    Contacto.find({  status: ['Atendido'] }).exec((err, contactos) => {
+        if (err) {
+            res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+        } else {
+            if (contactos) {
+                res.status(200).send({ contactos: contactos });
+            } else {
+                res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+            }
+        }
+    });
+
+};
+const getContactoPendientes = async(req, res) => {
+
+    Contacto.find({  status: ['Pendiente'] }).exec((err, contactos) => {
+        if (err) {
+            res.status(500).send({ message: 'Ocurrió un error en el servidor.' });
+        } else {
+            if (contactos) {
+                res.status(200).send({ contactos: contactos });
+            } else {
+                res.status(500).send({ message: 'No se encontró ningun dato en esta sección.' });
+            }
+        }
+    });
+
+};
+
+
+function atendido(req, res) {
+    var id = req.params['id'];
+    // console.log(id);
+    Contacto.findByIdAndUpdate({ _id: id }, { status: 'Atendido' }, (err, contacto) => {
+        if (err) {
+            res.status(500).send({ message: err });
+        } else {
+            if (contacto) {
+                res.status(200).send({ contacto: contacto });
+            } else {
+                res.status(403).send({ message: 'No se actualizó el contacto, vuelva a intentar nuevamente.' });
+            }
+        }
+    })
+}
+
+function desactivar(req, res) {
+    var id = req.params['id'];
+
+    Contacto.findByIdAndUpdate({ _id: id }, { status: 'Pendiente' }, (err, contacto) => {
+        if (err) {
+            res.status(500).send({ message: err });
+        } else {
+            if (contacto) {
+                res.status(200).send({ contacto: contacto });
+            } else {
+                res.status(403).send({ message: 'No se actualizó el contacto, vuelva a intentar nuevamente.' });
+            }
+        }
+    })
+}
+
 
 
 module.exports = {
@@ -105,4 +169,8 @@ module.exports = {
     crearContacto,
     borrarContacto,
     getContacto,
+    getContactoAtendidos,
+    getContactoPendientes,
+    atendido,
+    desactivar
 };

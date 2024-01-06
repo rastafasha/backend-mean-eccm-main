@@ -29,7 +29,8 @@ function listarAdmin(req, res) {
 
 const getProductos = async(req, res) => {
 
-    const productos = await Producto.find().populate('titulo img categoria color selector');
+    const productos = await Producto.find()
+    .populate('titulo img categoria color selector');
 
     res.json({
         ok: true,
@@ -117,7 +118,7 @@ const crearProducto = async(req, res) => {
         });
 
     } catch (error) {
-        // console.log(error);
+        console.log(error);
         res.status(500).json({
             ok: false,
             msg: 'Hable con el admin'

@@ -44,12 +44,12 @@ router.get('/', getProductos);
 router.get('/activos', getProductosActivos);
 router.get('/destacados', destacado);
 
-router.post('/', [
+router.post('/store', [
     validarJWT,
     validarCampos
 ], crearProducto);
 
-router.put('/:id', [
+router.put('/update/:id', [
     validarJWT,
     validarCampos
 ], actualizarProducto);
